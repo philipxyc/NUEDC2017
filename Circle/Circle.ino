@@ -1,5 +1,5 @@
 #include "MeMegaPi.h"
-
+#include <math.h>
 #include "MeGyro.h"
 
 #include <Wire.h>
@@ -10,10 +10,7 @@ MeMegaPiDCMotor motor3(PORT3A);
 MeMegaPiDCMotor motor4(PORT4A);
 
 uint8_t fullSpeed = 255;
-uint8_t root2Speed = fullSpeed/1.414;
 
-uint8_t Speed1 = 150;
-uint8_t Speed2 = 255;
 unsigned int I = 500;
 float originx,originy,originz;
 
@@ -25,11 +22,6 @@ void setup()
   Serial.begin(9600);
 
   gyro.begin();
-
-  motor2.run(255);
-
-  motor4.run(255);
-
   gyro.update();
   originx = gyro.getAngleX();
   originy = gyro.getAngleY();
@@ -41,33 +33,47 @@ void setup()
 void loop()
 
 {
-  motor1.run(fullSpeed);
-  delay(50);
-  motor1.run(root2Speed);
-  motor2.run(root2Speed);
-  delay(100);
-  motor1.stop();
   
-  motor2.run(fullSpeed);
-  delay(50);
-  motor2.run(root2Speed);
-  motor3.run(root2Speed);
-  delay(100);
-  motor2.stop();
+  Serial.print("OX:");
+  Serial.print(originx);
+  Serial.print("OY:");
+  Serial.print(originy);
+  Serial.print("OZ:");
+  Serial.println(originz);
   
-  motor3.run(fullSpeed);
-  delay(50);
-  motor3.run(root2Speed);
-  motor4.run(root2Speed);
-  delay(100);
-  motor3.stop();
+  gyro.update();
+
+  Serial.print("X:");
+
+  Serial.print(gyro.getAngleX()-originx);
+
+  Serial.print(" Y:");
+
+  Serial.print(gyro.getAngleY()-originy);
+
+  Serial.print(" Z:");
+
+  Serial.println(gyro.getAngleZ()-originz);
   
-  motor4.run(fullSpeed);
-  delay(50);
-  motor4.run(root2Speed);
-  motor1.run(root2Speed);
-  delay(100);
-  motor4.stop();
+  gyro.update();
+  if(gyro.getAngleX()>0){
+    motor1.run((15-gyro.getAngleX())*500);
+    motor3.stop();
+  }else{
+    motor3.run((15+gyro.getAngleX())*500);
+    motor1.stop();
+  }
+  if(gyro.getAngleY()>0){
+    motor4.run((15-gyro.getAngleX())*500);
+    motor2.stop();
+  }else{
+    motor2.run((15+gyro.getAngleX())*500);
+    motor4.stop();
+  }
+    
+  originx = gyro.getAngleX();
+  originy = gyro.getAngleY();
+  originz = gyro.getAngleZ();
 }
 
 void forward1(int mspeed){

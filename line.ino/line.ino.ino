@@ -25,10 +25,8 @@ void setup()
 
   gyro.begin();
 
-  motor2.run(255);
-
-  motor4.run(255);
-
+  motor1.run(255);
+  delay(1500);
   gyro.update();
   originx = gyro.getAngleX();
   originy = gyro.getAngleY();
@@ -62,23 +60,12 @@ void loop()
 
   Serial.println(gyro.getAngleZ()-originz);
   
-  forward1(fullSpeed);
-  for (int i=0;i<200;i++){
-    gyro.update();
-    forward4((gyro.getAngleY()-originy)*5000);
-    originx = gyro.getAngleX();
-    originy = gyro.getAngleY();
-    originz = gyro.getAngleZ();
-  }
-  
-  forward3(fullSpeed);
-  for(int i=0;i<200;i++){
-    gyro.update();
-    forward4((gyro.getAngleY()-originy)*50000);
-    originx = gyro.getAngleX();
-    originy = gyro.getAngleY();
-    originz = gyro.getAngleZ();
-  }
+  gyro.update();
+  forward4((gyro.getAngleY()-originy)*1000);
+  forward3((gyro.getAngleX()-originx)*1000);
+  originx = gyro.getAngleX();
+  originy = gyro.getAngleY();
+  originz = gyro.getAngleZ();
   
 }
 

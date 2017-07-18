@@ -64,7 +64,7 @@ void loop()
   
   gyro.update();
   forward4((gyro.getAngleY()-originy)*1000);
-  forward3((gyro.getAngleY()-originy)*1000);
+  forward1((gyro.getAngleX()-originx)*1000);
   originx = gyro.getAngleX();
   originy = gyro.getAngleY();
   originz = gyro.getAngleZ();
