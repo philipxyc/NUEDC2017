@@ -1,5 +1,5 @@
 #include "MeMegaPi.h"
-
+#include <math.h>
 #include "MeGyro.h"
 
 #include <Wire.h>
@@ -11,8 +11,6 @@ MeMegaPiDCMotor motor4(PORT4A);
 
 uint8_t fullSpeed = 255;
 
-uint8_t Speed1 = 150;
-uint8_t Speed2 = 255;
 unsigned int I = 500;
 float originx,originy,originz;
 
@@ -24,9 +22,6 @@ void setup()
   Serial.begin(9600);
 
   gyro.begin();
-
-  motor1.run(255);
-  delay(1500);
   gyro.update();
   originx = gyro.getAngleX();
   originy = gyro.getAngleY();
@@ -61,12 +56,24 @@ void loop()
   Serial.println(gyro.getAngleZ()-originz);
   
   gyro.update();
-  forward4((gyro.getAngleY()-originy)*1000);
-  forward3((gyro.getAngleX()-originx)*1000);
+  if(gyro.getAngleX()>0){
+    motor1.run((10-gyro.getAngleX())*500);
+    motor3.stop();
+  }else{
+    motor3.run((10+gyro.getAngleX())*500);
+    motor1.stop();
+  }
+  if(gyro.getAngleY()>0){
+    motor4.run((10-gyro.getAngleX())*500);
+    motor2.stop();
+  }else{
+    motor2.run((10+gyro.getAngleX())*500);
+    motor4.stop();
+  }
+    
   originx = gyro.getAngleX();
   originy = gyro.getAngleY();
   originz = gyro.getAngleZ();
-  
 }
 
 void forward1(int mspeed){
